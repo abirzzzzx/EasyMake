@@ -2,37 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Zoom on Hover</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitHub Button</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
       background-color: slateblue;
-      color: white;
     }
-
+    button {
+      background-color: blue;
+      color: white;
+      padding: 10px 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
     #ts {
       background-color: white;
-      color: slateblue;
       border: 10px solid white;
       border-radius: 10px;
-      padding: 15px;
-      font-size: 24px;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease;
       display: inline-block;
+      transition: transform 0.3s ease;
     }
-
     #ts:hover {
-      transform: scale(1.2);
+      transform: scale(1.3);
     }
   </style>
 </head>
 <body>
   <p id="ts">Hello Abirz!</p>
+
+  <script>
+    const ts = document.getElementById('ts');
+    ts.addEventListener('touchstart', () => {
+      ts.style.transform = 'scale(1.3)';
+    });
+    ts.addEventListener('touchend', () => {
+      ts.style.transform = 'scale(1)';
+    });
+  </script>
 </body>
 </html>
