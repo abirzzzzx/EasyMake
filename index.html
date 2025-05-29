@@ -13,15 +13,7 @@
       background-color: slateblue;
       color: white;
     }
-    button {
-      background-color: blue;
-      color: white;
-      padding: 10px 20px;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+
     #ts {
       background-color: white;
       color: slateblue;
@@ -31,6 +23,12 @@
       font-size: 24px;
       font-weight: 600;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+      display: inline-block;
+    }
+
+    #ts:hover {
+      transform: scale(1.2);
     }
   </style>
 </head>
