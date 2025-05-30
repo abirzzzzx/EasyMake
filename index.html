@@ -40,13 +40,13 @@
   </style>
 </head>
 <body>
-  <p id="ts">Hello, Abirz!</p>
-  <div id="ai-message"></div>
+  <p id="ts">Hello Abirz!</p>
+  <div id="ai-message">Loading your assistant...</div>
 
   <script>
-    const API_KEY = 'ng-1q22mTLKYzbfl7rcZ3f0efRAMIrbL5NE'; // <<== replace this
-    const interests = "coding, making sprites, playing games, building websites";
+    const API_KEY = "ng-1q22mTLKYzbfl7rcZ3f0efRAMIrbL5NE";
     const messageBox = document.getElementById("ai-message");
+    const interests = "coding, making sprites, playing games, building websites";
 
     async function fetchAIMessage() {
       try {
@@ -59,17 +59,23 @@
           body: JSON.stringify({
             model: "gpt-4o-mini",
             messages: [
-              { role: "system", content: "You are Abirz's AI assistant, like Jarvis. Suggest something cool based on his interests." },
-              { role: "user", content: "My interests are: " + interests }
+              {
+                role: "system",
+                content: "You are Abirz's friendly AI assistant. Based on his interests, suggest fun ideas or projects."
+              },
+              {
+                role: "user",
+                content: "Here are my interests: " + interests + ". Give me a cool idea or thing to do."
+              }
             ]
           })
         });
 
         const data = await response.json();
-        const aiReply = data.choices[0].message.content;
+        const aiReply = data.choices?.[0]?.message?.content || "No idea received.";
         typeReverseAndWrite(aiReply);
       } catch (err) {
-        messageBox.innerText = "Failed to fetch idea. Check your API key.";
+        messageBox.innerText = "Error contacting Naga AI.";
         console.error(err);
       }
     }
@@ -81,7 +87,7 @@
       function deleteOld() {
         if (i > 0) {
           messageBox.innerText = oldText.slice(0, --i);
-          setTimeout(deleteOld, 30);
+          setTimeout(deleteOld, 25);
         } else {
           typeNew(0);
         }
@@ -90,7 +96,7 @@
       function typeNew(j) {
         if (j < text.length) {
           messageBox.innerText += text[j++];
-          setTimeout(() => typeNew(j), 30);
+          setTimeout(() => typeNew(j), 25);
         }
       }
 
@@ -98,7 +104,7 @@
     }
 
     fetchAIMessage();
-    setInterval(fetchAIMessage, 10000); // refresh every 10 seconds
+    setInterval(fetchAIMessage, 10000);
   </script>
 </body>
 </html>
