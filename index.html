@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EasyMake AI</title>
+  <title>Jarvis AI for Abirz</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
   <style>
     body {
@@ -12,6 +12,7 @@
       padding: 20px;
       background-color: #1e1e2f;
       color: white;
+      overflow-x: hidden;
     }
 
     #ts {
@@ -33,18 +34,20 @@
 
     #ai-message {
       font-family: 'Orbitron', sans-serif;
-      font-size: 18px;
+      font-size: 16px;
       margin-top: 30px;
-      max-width: 90%;
+      max-width: 90vw;
       margin-left: auto;
       margin-right: auto;
-      max-height: 3.2em; /* approx. 2.5 lines */
-      overflow-wrap: break-word;
-      overflow-y: auto;
       line-height: 1.3em;
       padding: 10px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
       border-radius: 10px;
+      max-height: 3.2em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
+      word-break: break-word;
     }
 
     #ask-btn {
@@ -67,14 +70,14 @@
 </head>
 <body>
   <p id="ts">Hello Abirz!</p>
-  <div id="ai-message">Loading your assistant...</div>
+  <div id="ai-message">Loading Jarvis...</div>
   <button id="ask-btn">Ask Jarvis</button>
 
   <script>
     const API_KEY = "ng-1q22mTLKYzbfl7rcZ3f0efRAMIrbL5NE";
     const messageBox = document.getElementById("ai-message");
     const askBtn = document.getElementById("ask-btn");
-    const interests = "coding, making sprites, playing games, building websites";
+    const interests = "coding, making sprites, building games, pixel art, story writing";
 
     async function fetchAIMessage() {
       try {
@@ -89,21 +92,28 @@
             messages: [
               {
                 role: "system",
-                content: "You're Abirz's AI assistant. Give short, cool project or idea suggestions based on his interests."
+                content: "You're a smart assistant. Give short, useful, idea suggestions based ONLY on user interests. Never say 'That's great' or 'You can try'. Keep it real and no extra words. 25 words max."
               },
               {
                 role: "user",
-                content: "Here are my interests: " + interests + ". Give me a short cool idea (2 sentences max)."
+                content: "Here are my interests: " + interests + ". Give me a cool idea suggestion under 25 words."
               }
             ]
           })
         });
 
         const data = await response.json();
-        const aiReply = data.choices?.[0]?.message?.content || "No idea received.";
+        let aiReply = data.choices?.[0]?.message?.content || "No idea received.";
+        aiReply = aiReply.replace(/\s+/g, ' ').trim(); // fix spacing
+
+        // If it’s too long, slice it smartly
+        if (aiReply.split(" ").length > 25) {
+          aiReply = aiReply.split(" ").slice(0, 25).join(" ") + "...";
+        }
+
         typeReverseAndWrite(aiReply);
       } catch (err) {
-        messageBox.innerText = "Error contacting Naga AI.";
+        messageBox.innerText = "Jarvis failed to load.";
         console.error(err);
       }
     }
@@ -115,7 +125,7 @@
       function deleteOld() {
         if (i > 0) {
           messageBox.innerText = oldText.slice(0, --i);
-          setTimeout(deleteOld, 25);
+          setTimeout(deleteOld, 20);
         } else {
           typeNew(0);
         }
@@ -132,8 +142,8 @@
     }
 
     askBtn.addEventListener("click", fetchAIMessage);
-    fetchAIMessage(); // First run on load
-    setInterval(fetchAIMessage, 10000); // Auto refresh every 10s
+    fetchAIMessage(); // Load first time
+    setInterval(fetchAIMessage, 10000); // Update every 10s
   </script>
 </body>
 </html>
