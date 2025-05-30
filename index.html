@@ -47,6 +47,7 @@
       line-height: 1.6;
       box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
       min-height: 80px;
+      white-space: pre-line;
     }
 
     #askBtn {
@@ -76,6 +77,33 @@
     const ideaBox = document.getElementById("ideaBox");
     const askBtn = document.getElementById("askBtn");
 
+    function typeWriter(text, callback) {
+      let i = 0;
+      ideaBox.textContent = "";
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          ideaBox.textContent += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, 25); // typing speed
+    }
+
+    function reverseTypeWriter(callback) {
+      let current = ideaBox.textContent;
+      const interval = setInterval(() => {
+        if (current.length > 0) {
+          current = current.slice(0, -1);
+          ideaBox.textContent = current;
+        } else {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, 15); // erasing speed
+    }
+
     async function fetchIdea() {
       try {
         const response = await fetch("https://api.naga.ac/v1/chat/completions", {
@@ -89,7 +117,7 @@
             messages: [
               {
                 role: "system",
-                content: "You're Abirz's cool AI buddy! 🧠 Suggest creative, fun, short ideas about coding, game dev, or pixel art. Use exclamation marks and emojis. Be expressive, fun, and keep it under 125 characters!"
+                content: "You're Abirz's cool AI buddy! 🧠 Suggest creative, fun, short ideas about coding, game dev, or pixel art. Use emojis, exclamations, and make sure it's under 125 characters."
               },
               {
                 role: "user",
@@ -107,20 +135,22 @@
           text = text.substring(0, cutIndex !== -1 ? cutIndex : 125) + "...";
         }
 
-        ideaBox.textContent = text;
+        reverseTypeWriter(() => typeWriter(text));
       } catch (error) {
-        ideaBox.textContent = "⚠️ Jarvis is napping... Try again later!";
+        reverseTypeWriter(() => {
+          ideaBox.textContent = "⚠️ Jarvis is napping... Try again later!";
+        });
         console.error(error);
       }
     }
 
-    // Auto fetch every 10 seconds
+    // Auto fetch every 10s
     setInterval(fetchIdea, 10000);
 
-    // Button to manually ask
+    // Manual button
     askBtn.addEventListener("click", fetchIdea);
 
-    // Initial idea
+    // Initial fetch
     fetchIdea();
   </script>
 </body>
