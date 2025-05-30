@@ -33,19 +33,47 @@
 
     #ai-message {
       font-family: 'Orbitron', sans-serif;
-      font-size: 20px;
+      font-size: 18px;
       margin-top: 30px;
-      min-height: 40px;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+      max-height: 3.2em; /* approx. 2.5 lines */
+      overflow-wrap: break-word;
+      overflow-y: auto;
+      line-height: 1.3em;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    #ask-btn {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: slateblue;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    #ask-btn:hover {
+      background: indigo;
     }
   </style>
 </head>
 <body>
   <p id="ts">Hello Abirz!</p>
   <div id="ai-message">Loading your assistant...</div>
+  <button id="ask-btn">Ask Jarvis</button>
 
   <script>
     const API_KEY = "ng-1q22mTLKYzbfl7rcZ3f0efRAMIrbL5NE";
     const messageBox = document.getElementById("ai-message");
+    const askBtn = document.getElementById("ask-btn");
     const interests = "coding, making sprites, playing games, building websites";
 
     async function fetchAIMessage() {
@@ -61,11 +89,11 @@
             messages: [
               {
                 role: "system",
-                content: "You are Abirz's friendly AI assistant. Based on his interests, suggest fun ideas or projects."
+                content: "You're Abirz's AI assistant. Give short, cool project or idea suggestions based on his interests."
               },
               {
                 role: "user",
-                content: "Here are my interests: " + interests + ". Give me a cool idea or thing to do."
+                content: "Here are my interests: " + interests + ". Give me a short cool idea (2 sentences max)."
               }
             ]
           })
@@ -103,8 +131,9 @@
       deleteOld();
     }
 
-    fetchAIMessage();
-    setInterval(fetchAIMessage, 10000);
+    askBtn.addEventListener("click", fetchAIMessage);
+    fetchAIMessage(); // First run on load
+    setInterval(fetchAIMessage, 10000); // Auto refresh every 10s
   </script>
 </body>
 </html>
