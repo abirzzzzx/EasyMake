@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Abirz's Jarvis</title>
+  <title>Abirzzzzx's Jarvis</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
@@ -72,7 +72,7 @@
   </style>
 </head>
 <body>
-  <p id="ts">Hello Abirz!</p>
+  <p id="ts">Hello Abirzzzzx!</p>
   <p id="ideaText"></p>
 
   <div id="inputBox">
@@ -83,7 +83,8 @@
   <div id="aiReply"></div>
 
   <script>
-    // TYPEWRITER EFFECT
+    const interests = "I like making pixel art sprites, developing games like Undertale, writing JavaScript and Python code, building Discord bots, and exploring cool UI design ideas.";
+
     const ideas = [
       "Design a pixel art sprite 👾",
       "Write a Discord bot 🤖",
@@ -124,16 +125,31 @@
 
     updateIdeaText();
 
-    // AI CHATBOT USING PUBLIC API
+    // Auto-refresh typewriter every 10s
+    setInterval(() => {
+      deleting = true;
+    }, 10000);
+
     async function talkToAI(userInput) {
-      const res = await fetch("https://free-unoficial-gpt4o-mini-api-g70n.onrender.com/api/generate", {
+      const res = await fetch("https://api.naga.ac/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: userInput })
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "ng-1q22mTLKYzbfl7rcZ3f0efRAMIrbL5NE"
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "You are an assistant named Jarvis who knows the user's interests." },
+            { role: "user", content: `The user's interests are: ${interests}` },
+            { role: "user", content: userInput }
+          ],
+          temperature: 0.7
+        })
       });
 
       const data = await res.json();
-      return data.response || "Sorry, I couldn't think of a response.";
+      return data.choices?.[0]?.message?.content || "Jarvis didn't respond.";
     }
 
     async function askJarvis() {
