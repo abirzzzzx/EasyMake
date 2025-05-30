@@ -4,77 +4,122 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Jarvis AI Assistant</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 <style>
+  /* Dark mode styling */
   body {
-    background-color: #3f3cbb;
-    color: white;
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    padding: 30px 20px;
     margin: 0;
+    background-color: #121217;
+    color: #e0e0e0;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: 100vh;
+    user-select: none;
   }
-  #hello {
-    font-weight: 700;
-    font-size: 2.8rem;
+
+  h1 {
+    color: #82aaff;
     margin-bottom: 10px;
   }
-  #suggestion {
-    background: white;
-    color: #3f3cbb;
-    border-radius: 12px;
-    border: 8px solid white;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-    font-weight: 600;
-    font-size: 1.3rem;
-    max-width: 350px;
-    margin: 0 auto 30px;
-    padding: 15px 20px;
-    line-height: 1.3;
-    white-space: pre-wrap;
-    word-break: break-word;
-    max-height: 4.3em; /* ~2.5 lines */
-    overflow: hidden;
-  }
-  #askBtn {
-    background-color: #e6e6ff;
-    color: #3f3cbb;
+
+  #hello {
+    font-size: 2.2rem;
     font-weight: 700;
-    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+
+  #suggestion-box {
+    background: #1f1f2e;
+    border-radius: 15px;
+    box-shadow: 0 0 15px #536dfe88;
+    padding: 20px;
+    max-width: 350px;
+    min-height: 90px;
+    font-weight: 600;
+    font-size: 1.15rem;
+    line-height: 1.3em;
+    color: #a8b2ff;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    letter-spacing: 0.04em;
+    position: relative;
+  }
+
+  #ask-btn {
+    margin-top: 25px;
+    background: #536dfe;
     border: none;
     border-radius: 12px;
-    padding: 15px 35px;
+    padding: 14px 26px;
+    font-size: 1.1rem;
+    color: white;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    transition: background-color 0.25s ease;
+    font-weight: 600;
+    box-shadow: 0 5px 15px #536dfe99;
+    transition: background 0.3s ease;
+    user-select: none;
   }
-  #askBtn:hover {
-    background-color: #c7c7ff;
+
+  #ask-btn:hover {
+    background: #414edc;
+  }
+
+  /* Typewriter cursor */
+  #suggestion-box::after {
+    content: '|';
+    animation: blink 1s infinite;
+    position: absolute;
+    right: 15px;
+    bottom: 18px;
+    font-weight: 900;
+    color: #82aaff;
+  }
+
+  @keyframes blink {
+    0%, 50% {opacity: 1;}
+    51%, 100% {opacity: 0;}
+  }
+
+  /* Responsive for smaller devices */
+  @media (max-width: 400px) {
+    #suggestion-box {
+      max-width: 90vw;
+      font-size: 1rem;
+    }
   }
 </style>
 </head>
 <body>
 
-<h1 id="hello">Hello Abirz! 👋</h1>
-<p id="suggestion">Loading Jarvis ideas...</p>
-<button id="askBtn">Ask Jarvis 🤖</button>
+  <h1 id="hello">Hello Abirz! 🤖</h1>
+
+  <div id="suggestion-box">Click "Ask Jarvis" for ideas! 🚀</div>
+
+  <button id="ask-btn">Ask Jarvis</button>
 
 <script>
-  const suggestionEl = document.getElementById('suggestion');
-  const askBtn = document.getElementById('askBtn');
-
-  const API_KEY = '||ng-1q22mTLKYzbfl7rcZ3f0efRAMIrbL5NE||';  // Your Naga API key here
   const API_URL = 'https://api.naga.ac/v1/chat/completions';
+  const API_KEY = 'ng-1q22mTLKYzbfl7rcZ3f0efRAMIrbL5NE';
 
-  // Hype function to add emoji + exclamation
-  function hypeUp(text) {
-    if (!text.endsWith('!')) text += '!';
-    const emojis = ['🔥', '🚀', '🎉', '😎', '🎮', '💡', '⚡', '✨'];
-    return text + ' ' + emojis[Math.floor(Math.random() * emojis.length)];
+  const suggestionBox = document.getElementById('suggestion-box');
+  const askBtn = document.getElementById('ask-btn');
+
+  // Typewriter effect helper function
+  async function typeWriter(text, element) {
+    element.textContent = '';
+    for(let i = 0; i < text.length; i++) {
+      element.textContent += text[i];
+      await new Promise(r => setTimeout(r, 40));
+    }
   }
 
+  // Function to get Jarvis AI ideas
   async function getJarvisIdea() {
-    suggestionEl.textContent = 'Thinking... 🤔';
+    askBtn.disabled = true;
+    suggestionBox.textContent = 'Jarvis is thinking... 🤔';
 
     try {
       const response = await fetch(API_URL, {
@@ -88,7 +133,7 @@
           messages: [
             {
               role: 'system',
-              content: "You are Abirz’s hype AI buddy! Give short, exciting, creative ideas related to coding, game dev, sprites, or fun projects! Use exclamation marks and emojis! No boring stuff or generic CSS advice! Keep it under 100 characters and easy to read on mobile."
+              content: "You are Abirz’s hype AI buddy! Give short, exciting, creative ideas related to coding, game dev, sprites, or fun projects! Use exclamation marks and emojis! No boring stuff or generic CSS advice! Keep it under 100 characters, easy to read on mobile."
             },
             {
               role: 'user',
@@ -96,40 +141,40 @@
             }
           ],
           max_tokens: 100,
-          temperature: 0.8
+          temperature: 0.9
         })
       });
 
-      if (!response.ok) throw new Error('API error');
+      if (!response.ok) throw new Error(`API error ${response.status}`);
 
       const data = await response.json();
+
       let text = data.choices[0].message.content.trim();
 
-      // Fix spacing issues (some AI responses glue words together)
-      text = text.replace(/([a-z])([A-Z])/g, '$1 $2'); // add space before caps in mid-word (basic fix)
+      // Fix spacing if words are mashed up
+      text = text.replace(/([a-z])([A-Z])/g, '$1 $2');
 
-      // Limit to max 2.5 lines by truncating to approx 100 chars nicely
+      // Limit to max 100 characters, trimming nicely at word boundary
       if (text.length > 100) {
-        // Try to cut at last space before 100 chars for nicer truncation
-        const cutIndex = text.lastIndexOf(' ', 100);
-        text = text.slice(0, cutIndex > 0 ? cutIndex : 100) + '...';
+        let cutIndex = text.lastIndexOf(' ', 100);
+        if (cutIndex === -1) cutIndex = 100;
+        text = text.slice(0, cutIndex) + '...';
       }
 
-      suggestionEl.textContent = hypeUp(text);
+      await typeWriter(text, suggestionBox);
 
-    } catch (err) {
-      suggestionEl.textContent = 'Oops, Jarvis is napping 😴. Try again!';
-      console.error(err);
+    } catch (error) {
+      suggestionBox.textContent = 'Oops, Jarvis is napping 😴. Try again!';
+      console.error('Fetch error:', error);
+    } finally {
+      askBtn.disabled = false;
     }
   }
 
   askBtn.addEventListener('click', getJarvisIdea);
 
-  // Auto-refresh suggestion every 10 seconds
-  setInterval(getJarvisIdea, 10000);
-
-  // Initial call on load
-  getJarvisIdea();
+  // Optional: auto-refresh suggestion every 15 seconds
+  // setInterval(getJarvisIdea, 15000);
 </script>
 
 </body>
